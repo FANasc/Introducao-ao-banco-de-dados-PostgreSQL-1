@@ -1,0 +1,23 @@
+create table if not exists funcionarios (
+	id serial,
+	nome varchar(50),
+	gerente integer,
+	primary key id,
+	foreign key gerente references funcionarios id );
+
+insert into funcionarios (nome, gerente) values('Anselmo',null);
+insert into funcionarios (nome, gerente) values('Beatriz',1);
+insert into funcionarios (nome, gerente) values('Maggno',1);
+insert into funcionarios (nome, gerente) values('Crenilda',2);
+insert into funcionarios (nome, gerente) values('Wagner',4);
+
+create or replace recursive view vw_func(id,gerente,funcionario) as (
+	select id,cast('' as varchar) as gerente ,nome
+	from funcionarios
+	where gerente is null
+	union all
+	select funcionarios.id,gerentes.nome,funcionarios.nome
+	from funcionarios
+	join vw_func on vw_func.id = funcionarios.gerente
+	join funcionarios gerentes on gerentes.id = vw_func.id
+);
